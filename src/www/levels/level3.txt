@@ -1,13 +1,12 @@
-2 10
-bbbbbbbbbbbbbbbbbbbbbb
-bt        g         eb
-bbbbbbbbbb bbbbbbbbbbb
-b        b           b
-b        bbbbbbbbbb  b
-b                  b b
-b                    b
-b  bbkkbbbkkbbbkkbbbob
-bs br               fb
-bbkbbbbbbbbbbbbbbbbbbb
-1 1 20 8
-20 1 20 7
+1 10
+bbbbbbbbbb
+b      gqb
+b      bbb
+b        b
+b        b
+b        b
+b        b
+b     bbbb
+bs   go lb
+bbbbbbbbbb
+8 1 6 8
