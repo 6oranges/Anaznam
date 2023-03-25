@@ -1,0 +1,19 @@
+{
+  "name": "anaznam",
+  "version": "1.0.0",
+  "description": "",
+  "main": "game.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/6oranges/Anaznam.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/6oranges/Anaznam/issues"
+  },
+  "homepage": "https://github.com/6oranges/Anaznam#readme"
+}

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Anaznam</title>
+    <style>
+      html,body,canvas {
+        width:100%;
+        height:calc(100% - 10px);
+        margin:0;
+        padding:0;
+      }
+      canvas:focus{
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="request-hid-device">Request Remote</button>
+    <canvas id="game" tabindex="0"></canvas>
+    <script type="module" src="game.js"></script>
+  </body>
+</html>
