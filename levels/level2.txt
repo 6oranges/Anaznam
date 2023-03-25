@@ -1,0 +1,12 @@
+1 10
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bs                       u    b
+bb     bbbbbbbbbbbbbbbbbbbbbbbb
+b                             b
+b                             b
+b                             b
+b                             b
+bq                            b
+bkkkkkkkkkkkkkkkkkkkkkkkkkkkkkb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+1 7 4 3

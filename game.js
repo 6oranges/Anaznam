@@ -1,6 +1,9 @@
 "use strict";
 const TILEWIDTH = 64;
 function placeCharacters(gamestate) {
+  if (gamestate.levelNames[gamestate.levelCounter] != gamestate.currLevel) {
+    gamestate.currLevel = gamestate.levelNames[gamestate.levelCounter]
+  }
   gamestate.tick = -1;
   for (let row = 0; row < gamestate.levels[gamestate.currLevel].length; ++row) {
     for (let col = 0; col < gamestate.levels[gamestate.currLevel][0].length; ++col) {
@@ -53,31 +56,31 @@ function Character() {
   const collides = (x, y, gamestate) => {
     return touching(x, y, gamestate).includes("b") || touching(x, y, gamestate).includes("o");
   }
-  char.flip=(ctx)=>{
-    switch (char.gravity){
-      case "down":{
-        if (char.dx<0){
+  char.flip = (ctx) => {
+    switch (char.gravity) {
+      case "down": {
+        if (char.dx < 0) {
           ctx.scale(-1, 1);
           return true;
         }
         break;
       }
-      case "up":{
-        if (char.dx>0){
+      case "up": {
+        if (char.dx > 0) {
           ctx.scale(-1, 1);
           return true;
         }
         break;
       }
-      case "left":{
-        if (char.dy<0){
+      case "left": {
+        if (char.dy < 0) {
           ctx.scale(1, -1);
           return true;
         }
         break;
       }
-      case "right":{
-        if (char.dy>0){
+      case "right": {
+        if (char.dy > 0) {
           ctx.scale(1, -1);
           return true;
         }
@@ -86,21 +89,21 @@ function Character() {
     }
     return false;
   }
-  char.collidingButton = (x,y, gamestate) =>{
-    const t= touching(char.x,char.y,gamestate).includes(gamestate.levels[gamestate.currLevel][y][x]);
-    if (!t){
+  char.collidingButton = (x, y, gamestate) => {
+    const t = touching(char.x, char.y, gamestate).includes(gamestate.levels[gamestate.currLevel][y][x]);
+    if (!t) {
       return false;
     }
-    if (gamestate.levels[gamestate.currLevel][y][x].dir=="q" && char.gravity == "down"){
+    if (gamestate.levels[gamestate.currLevel][y][x].dir == "q" && char.gravity == "down") {
       return true;
     }
-    if (gamestate.levels[gamestate.currLevel][y][x].dir=="w" && char.gravity == "up"){
+    if (gamestate.levels[gamestate.currLevel][y][x].dir == "w" && char.gravity == "up") {
       return true;
     }
-    if (gamestate.levels[gamestate.currLevel][y][x].dir=="e" && char.gravity == "right"){
+    if (gamestate.levels[gamestate.currLevel][y][x].dir == "e" && char.gravity == "right") {
       return true;
     }
-    if (gamestate.levels[gamestate.currLevel][y][x].dir=="t" && char.gravity == "left"){
+    if (gamestate.levels[gamestate.currLevel][y][x].dir == "t" && char.gravity == "left") {
       return true;
     }
     return false;
@@ -221,12 +224,15 @@ function Character() {
         char.dx = -JUMPPOWER;
       }
     }
+    if (touching(char.x, char.y, gamestate).includes("u")) {
+      nextLevel(gamestate);
+    }
     if (input.restart || touching(char.x, char.y, gamestate).includes("k")) {
-      gamestate.restart=true;
+      gamestate.restart = true;
     }
     if (input.beem) {
       if (char.current) {
-        if (gamestate.clones[gamestate.currLevel] > gamestate.histories.length){
+        if (gamestate.clones[gamestate.currLevel] > gamestate.histories.length) {
           const hist = Character();
           hist.history = char.history;
           hist.current = false;
@@ -250,30 +256,30 @@ function logic(gamestate) {
 
   for (let row = 0; row < gamestate.levels[gamestate.currLevel].length; ++row) {
     for (let col = 0; col < gamestate.levels[gamestate.currLevel][0].length; ++col) {
-      if (gamestate.levels[gamestate.currLevel][row][col].id === "button"){
-        let touching=gamestate.char.collidingButton(col,row,gamestate);
+      if (gamestate.levels[gamestate.currLevel][row][col].id === "button") {
+        let touching = gamestate.char.collidingButton(col, row, gamestate);
         for (let i = 0; i < gamestate.histories.length; ++i) {
-          if (gamestate.histories[i].collidingButton(col,row,gamestate)){
-            touching=true;
+          if (gamestate.histories[i].collidingButton(col, row, gamestate)) {
+            touching = true;
             break;
           }
         }
-        if (gamestate.levels[gamestate.currLevel][row][col].active != touching){
+        if (gamestate.levels[gamestate.currLevel][row][col].active != touching) {
           for (let place of gamestate.levels[gamestate.currLevel][row][col].effect) {
-            if (gamestate.levels[gamestate.currLevel][place[1]][place[0]]=="o"){
-              gamestate.levels[gamestate.currLevel][place[1]][place[0]]=" "
+            if (gamestate.levels[gamestate.currLevel][place[1]][place[0]] == "o") {
+              gamestate.levels[gamestate.currLevel][place[1]][place[0]] = " "
             }
-            else if (gamestate.levels[gamestate.currLevel][place[1]][place[0]]==" "){
-              gamestate.levels[gamestate.currLevel][place[1]][place[0]]="o"
+            else if (gamestate.levels[gamestate.currLevel][place[1]][place[0]] == " ") {
+              gamestate.levels[gamestate.currLevel][place[1]][place[0]] = "o"
             }
-            else if (gamestate.levels[gamestate.currLevel][place[1]][place[0]]=="g"){
-              gamestate.levels[gamestate.currLevel][place[1]][place[0]]="f"
+            else if (gamestate.levels[gamestate.currLevel][place[1]][place[0]] == "g") {
+              gamestate.levels[gamestate.currLevel][place[1]][place[0]] = "f"
             }
-            else if (gamestate.levels[gamestate.currLevel][place[1]][place[0]]=="f"){
-              gamestate.levels[gamestate.currLevel][place[1]][place[0]]="g"
+            else if (gamestate.levels[gamestate.currLevel][place[1]][place[0]] == "f") {
+              gamestate.levels[gamestate.currLevel][place[1]][place[0]] = "g"
             }
           }
-          gamestate.levels[gamestate.currLevel][row][col].active=touching;
+          gamestate.levels[gamestate.currLevel][row][col].active = touching;
         }
       }
     }
@@ -283,11 +289,15 @@ function logic(gamestate) {
     gamestate.histories[i].update(gamestate);
   }
   gamestate.char.update(gamestate, gamestate.input);
-  if (gamestate.restart){
+  if (gamestate.restart) {
     gamestate.restart = false;
-    gamestate.histories=[];
+    gamestate.histories = [];
     placeCharacters(gamestate);
   }
+}
+function nextLevel(gamestate) {
+  gamestate.restart = true;
+  gamestate.levelCounter += 1;
 }
 function draw(gamestate, ctx) {
   ctx.clearRect(0, 0, gamestate.width, gamestate.height);
@@ -343,14 +353,14 @@ function draw(gamestate, ctx) {
         if (gamestate.levels[gamestate.currLevel][row][col].dir == "e") {
           ctx.save();
           ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
-          ctx.rotate(3*Math.PI/2);
+          ctx.rotate(3 * Math.PI / 2);
           ctx.drawImage(gamestate.images.button, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
           ctx.restore();
         }
         if (gamestate.levels[gamestate.currLevel][row][col].dir == "t") {
           ctx.save();
           ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
-          ctx.rotate(Math.PI/2);
+          ctx.rotate(Math.PI / 2);
           ctx.drawImage(gamestate.images.button, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
           ctx.restore();
         }
@@ -371,14 +381,14 @@ function draw(gamestate, ctx) {
         if (gamestate.levels[gamestate.currLevel][row][col] == "l") {
           ctx.save();
           ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
-          ctx.rotate(3*Math.PI/2);
+          ctx.rotate(3 * Math.PI / 2);
           ctx.drawImage(gamestate.images.winbutton, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
           ctx.restore();
         }
         if (gamestate.levels[gamestate.currLevel][row][col] == "r") {
           ctx.save();
           ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
-          ctx.rotate(Math.PI/2);
+          ctx.rotate(Math.PI / 2);
           ctx.drawImage(gamestate.images.winbutton, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
           ctx.restore();
         }
@@ -478,10 +488,22 @@ async function fetchLevel(url) {
     for (let j = 0; j < (currRow.length - 2) / 2; ++j) {
       effect.push([parseInt(currRow[2 * j + 2]), parseInt(currRow[2 * j + 3])])
     }
-    map[parseInt(currRow[1])][parseInt(currRow[0])] = { id: "button", effect, active: false, dir:map[parseInt(currRow[1])][parseInt(currRow[0])] }
+    map[parseInt(currRow[1])][parseInt(currRow[0])] = { id: "button", effect, active: false, dir: map[parseInt(currRow[1])][parseInt(currRow[0])] }
   }
   return [map, clones];
 
+}
+async function fetchLevels(url, gamestate) {
+  const response = await fetch(url);
+  const text = await response.text();
+  const levels = text.split("\n");
+  for (let level of levels) {
+    await fetchLevel(level).then(([map, clones]) => {
+      gamestate.levels[level] = map;
+      gamestate.clones[level] = clones;
+    });
+  }
+  return levels;
 }
 function loadImage(url) {
   return new Promise((resolve) => {
@@ -566,6 +588,7 @@ function initCanvas() {
 }
 async function main() {
   const canvas = document.getElementById("game");
+  canvas.focus()
   const ctx = canvas.getContext("2d")
   const gamestate = {}
   gamestate.char = Character();
@@ -583,7 +606,7 @@ async function main() {
   gamestate.levels = {};
   gamestate.clones = {};
   gamestate.images = {};
-  gamestate.restart=false;
+  gamestate.restart = false;
   const player = loadImage("images/cheese.svg");
   const gplayer = loadImage("images/orangeCheese.svg");
   const gravityOn = loadImage("images/tiles_GravityOn.svg");
@@ -593,11 +616,9 @@ async function main() {
   const door = loadImage("images/tiles_Door.svg");
   const death = loadImage("images/tiles_Death.svg");
   const button = loadImage("images/tiles_Button.svg");
-  const lvl1 = fetchLevel("levels/level1.txt");
-  await Promise.all([player, gplayer, gravityOn, gravityOff, winButton, block, door, death, button, lvl1]);
-  const [map, clones] = await lvl1
-  gamestate.levels["level1"] = map;
-  gamestate.clones["level1"] = clones;
+  const levelNames = fetchLevels("levels.txt", gamestate);
+  await Promise.all([player, gplayer, gravityOn, gravityOff, winButton, block, door, death, button, levelNames]);
+  gamestate.levelNames = await levelNames;
   gamestate.images["player"] = await player;
   gamestate.images["ghostplayer"] = await gplayer;
   gamestate.images["gravityon"] = await gravityOn;
@@ -607,7 +628,8 @@ async function main() {
   gamestate.images["door"] = await door;
   gamestate.images["death"] = await death;
   gamestate.images["button"] = await button;
-  gamestate.currLevel = "level1";
+  gamestate.currLevel = gamestate.levelNames[0];
+  gamestate.levelCounter = 0
   gamestate.histories = []
   placeCharacters(gamestate);
   function loop() {
@@ -619,3 +641,8 @@ async function main() {
   window.debug = gamestate
 }
 main()
+window.restart = () => {
+  debug.restart = false;
+  debug.histories = [];
+  placeCharacters(debug);
+}
