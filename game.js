@@ -90,6 +90,9 @@ function Character() {
     return false;
   }
   char.collidingButton = (x, y, gamestate) => {
+    if (char.fizzle){
+      return false;
+    }
     const t = touching(char.x, char.y, gamestate).includes(gamestate.levels[gamestate.currLevel][y][x]);
     if (!t) {
       return false;
