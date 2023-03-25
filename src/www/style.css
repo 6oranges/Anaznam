@@ -1,0 +1,105 @@
+
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+.signup-main{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin-top:-69px;
+    height:100vh;
+}
+
+.signup-container{
+    display:flex;
+    flex-direction: column;
+    padding:16px;
+    border:solid rgb(0,148,68) 5px;
+    border-radius:5px;
+    font-family:"Roboto Condensed";
+    padding-top:0;
+    background-color:white;
+}
+
+input{
+    width:250px;
+    height:30px;
+    font-size:1em;
+    font-family:"Roboto Condensed"
+}
+
+input:focus{
+    outline: none !important;
+    border: solid rgb(0,148,68) 3px;
+    border-radius:2px;
+}
+
+.signup-button{
+    background-color:rgb(57,181,54);
+    border:solid rgb(0,148,68) 5px;
+    width:250px;
+    height:50px;
+    font-family:"Kanit";
+    font-size:1.2em;
+    color:white;
+    margin-top:20px;
+}
+
+.signup-button:hover{
+    cursor:pointer;
+}
+
+header{
+    display:flex;
+    align-items: center;
+    justify-content:space-around;
+    height:69px;
+    background-color:rgb(57,181,54);
+    color:white;
+    position:relative;
+    z-index: 1;
+}
+
+header h1{
+    font-family:"Kanit"
+}
+
+#homePage,#logInPage,#signUpPage,#gamePage{
+    display:none;
+    background-color: black;
+}
+nav button {
+    border:none;
+    background-color: transparent;
+    font-family:"Roboto Condensed";
+    color:white;
+    font-size:1.5em;
+    transition:1s ease;
+    margin:0px 8px 0px 8px;
+}
+nav button:hover{
+    cursor:pointer;
+    opacity:70%;
+    font-size:1.6em;
+    transition:.3s ease;
+}
+canvas{
+    width:100%;
+    height:calc(100vh - 73px);
+    margin:0;
+    padding:0;
+    margin-top:-22px;
+    background-color: black;
+}
+canvas:focus{
+    outline: none;
+  }

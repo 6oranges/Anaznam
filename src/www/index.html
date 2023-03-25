@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Anaznam</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&family=Roboto+Condensed:wght@300&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <header>
+      <h1>Anaznam</h1>
+      <nav>
+        <button onClick="signUpPage()">Sign Up</button>
+        <button onClick="logInPage()">Log In</button>
+        <button onClick="gamePage()">Game</button>
+      </nav>
+    </header>
+    <div id="logInPage">
+      <div class="signup-main">
+        <div class="signup-container">
+          <h2>Log in</h2>
+          <label>Email</label>
+          <input type="email" id="loginEmail"/>
+          <label>Password</label>
+          <input type="password" id="loginPassword"/>
+          <button type="button" class="signup-button" onClick="logIn()">Log In</button>
+        </div>
+      </div>
+    </div>
+    <div id="homePage">
+
+    </div>
+    <div id="signUpPage">
+      <div class="signup-main">
+        <div class="signup-container">
+          <h2>Sign Up</h2>
+          <label>First Name</label>
+          <input type="text" id="firstName" />
+          <label>Last Name</label>
+          <input type="text" id="lastName" />
+          <label>Email</label>
+          <input type="email" id="email"/>
+          <label>Password</label>
+          <input type="password" id="password"/>
+          <button type="button" class="signup-button" onClick="signUp()">Log In</button>
+        </div>
+      </div>
+    </div>
+    <div id="gamePage">
+      <button id="request-hid-device">Request Remote</button>
+      <canvas id="game" tabindex="0"></canvas>
+    </div>
+    <script type="module" src="game.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

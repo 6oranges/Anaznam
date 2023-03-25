@@ -1,0 +1,12 @@
+1 10
+bbbbbbbbbb
+br      gb
+bbbbbbbb b
+b        b
+b        b
+b        b
+b        b
+b        b
+bsq     fb
+bbbbbbbbbb
+2 8 8 8

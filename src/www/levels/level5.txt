@@ -1,0 +1,13 @@
+2 10
+bbbbbbbbbbbbbbbbbbbbb
+b    o   fb         k
+b  ebk    b         k
+b    k    b         k
+b    k   q          k
+b  gbkkkkbb         k
+k         bkkkkkkk  b
+k         b         b
+ks       gbr       gb
+bbbbbbbbbbbbbbbbbbbbb
+3 2 5 1 9 1
+9 4 11 5 12 5 13 5 14 5 15 5 16 5
