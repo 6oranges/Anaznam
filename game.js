@@ -224,7 +224,16 @@ function Character() {
         char.dx = -JUMPPOWER;
       }
     }
-    if (touching(char.x, char.y, gamestate).includes("u")) {
+    if (touching(char.x, char.y, gamestate).includes("u") && char.gravity=="down") {
+      nextLevel(gamestate);
+    }
+    if (touching(char.x, char.y, gamestate).includes("d") && char.gravity=="up") {
+      nextLevel(gamestate);
+    }
+    if (touching(char.x, char.y, gamestate).includes("l") && char.gravity=="right") {
+      nextLevel(gamestate);
+    }
+    if (touching(char.x, char.y, gamestate).includes("r") && char.gravity=="left") {
       nextLevel(gamestate);
     }
     if (input.restart || touching(char.x, char.y, gamestate).includes("k")) {
