@@ -1,0 +1,11 @@
+0 10
+bbbbbbbbbb
+bg       b
+b bbbbbb b
+b b   db b
+b b    b b
+b b    b b
+b     gb b
+bbbbbbbb b
+bs      gb
+bbbbbbbbbb
