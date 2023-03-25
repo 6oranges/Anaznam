@@ -53,6 +53,39 @@ function Character() {
   const collides = (x, y, gamestate) => {
     return touching(x, y, gamestate).includes("b") || touching(x, y, gamestate).includes("o");
   }
+  char.flip=(ctx)=>{
+    switch (char.gravity){
+      case "down":{
+        if (char.dx<0){
+          ctx.scale(-1, 1);
+          return true;
+        }
+        break;
+      }
+      case "up":{
+        if (char.dx>0){
+          ctx.scale(-1, 1);
+          return true;
+        }
+        break;
+      }
+      case "left":{
+        if (char.dy<0){
+          ctx.scale(1, -1);
+          return true;
+        }
+        break;
+      }
+      case "right":{
+        if (char.dy>0){
+          ctx.scale(1, -1);
+          return true;
+        }
+        break;
+      }
+    }
+    return false;
+  }
   char.collidingButton = (x,y, gamestate) =>{
     const t= touching(char.x,char.y,gamestate).includes(gamestate.levels[gamestate.currLevel][y][x]);
     if (!t){
@@ -310,14 +343,14 @@ function draw(gamestate, ctx) {
         if (gamestate.levels[gamestate.currLevel][row][col].dir == "e") {
           ctx.save();
           ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
-          ctx.rotate(Math.PI/2);
+          ctx.rotate(3*Math.PI/2);
           ctx.drawImage(gamestate.images.button, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
           ctx.restore();
         }
         if (gamestate.levels[gamestate.currLevel][row][col].dir == "t") {
           ctx.save();
           ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
-          ctx.rotate(3*Math.PI/2);
+          ctx.rotate(Math.PI/2);
           ctx.drawImage(gamestate.images.button, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
           ctx.restore();
         }
@@ -385,6 +418,7 @@ function draw(gamestate, ctx) {
       if (!char.fizzle) {
         ctx.save();
         ctx.translate(char.x + 24, char.y + 24)
+        char.flip(ctx)
         ctx.rotate(char.rotation);
         ctx.translate(0, Math.sin((gamestate.tick + (i * 57 + 13) % 94) / 15) * 2);
         ctx.drawImage(gamestate.images.ghostplayer, -28, -28, 56, 56);
@@ -392,7 +426,8 @@ function draw(gamestate, ctx) {
       }
     }
     ctx.save();
-    ctx.translate(gamestate.char.x + 24, gamestate.char.y + 24)
+    ctx.translate(gamestate.char.x + 24, gamestate.char.y + 24);
+    gamestate.char.flip(ctx)
     ctx.rotate(gamestate.char.rotation);
     ctx.translate(0, Math.sin(gamestate.tick / 15) * 2);
     ctx.drawImage(gamestate.images.player, -28, -28, 56, 56);
