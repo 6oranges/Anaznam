@@ -54,7 +54,23 @@ function Character() {
     return touching(x, y, gamestate).includes("b") || touching(x, y, gamestate).includes("o");
   }
   char.collidingButton = (x,y, gamestate) =>{
-    return touching(char.x,char.y,gamestate).includes(gamestate.levels[gamestate.currLevel][y][x]);
+    const t= touching(char.x,char.y,gamestate).includes(gamestate.levels[gamestate.currLevel][y][x]);
+    if (!t){
+      return false;
+    }
+    if (gamestate.levels[gamestate.currLevel][y][x].dir=="q" && char.gravity == "down"){
+      return true;
+    }
+    if (gamestate.levels[gamestate.currLevel][y][x].dir=="w" && char.gravity == "up"){
+      return true;
+    }
+    if (gamestate.levels[gamestate.currLevel][y][x].dir=="e" && char.gravity == "right"){
+      return true;
+    }
+    if (gamestate.levels[gamestate.currLevel][y][x].dir=="t" && char.gravity == "left"){
+      return true;
+    }
+    return false;
   }
   char.update = (gamestate, input) => {
     if (char.fizzle) {
@@ -202,7 +218,30 @@ function logic(gamestate) {
   for (let row = 0; row < gamestate.levels[gamestate.currLevel].length; ++row) {
     for (let col = 0; col < gamestate.levels[gamestate.currLevel][0].length; ++col) {
       if (gamestate.levels[gamestate.currLevel][row][col].id === "button"){
-
+        let touching=gamestate.char.collidingButton(col,row,gamestate);
+        for (let i = 0; i < gamestate.histories.length; ++i) {
+          if (gamestate.histories[i].collidingButton(col,row,gamestate)){
+            touching=true;
+            break;
+          }
+        }
+        if (gamestate.levels[gamestate.currLevel][row][col].active != touching){
+          for (let place of gamestate.levels[gamestate.currLevel][row][col].effect) {
+            if (gamestate.levels[gamestate.currLevel][place[1]][place[0]]=="o"){
+              gamestate.levels[gamestate.currLevel][place[1]][place[0]]=" "
+            }
+            else if (gamestate.levels[gamestate.currLevel][place[1]][place[0]]==" "){
+              gamestate.levels[gamestate.currLevel][place[1]][place[0]]="o"
+            }
+            else if (gamestate.levels[gamestate.currLevel][place[1]][place[0]]=="g"){
+              gamestate.levels[gamestate.currLevel][place[1]][place[0]]="f"
+            }
+            else if (gamestate.levels[gamestate.currLevel][place[1]][place[0]]=="f"){
+              gamestate.levels[gamestate.currLevel][place[1]][place[0]]="g"
+            }
+          }
+          gamestate.levels[gamestate.currLevel][row][col].active=touching;
+        }
       }
     }
   }
@@ -254,28 +293,28 @@ function draw(gamestate, ctx) {
           ctx.drawImage(gamestate.images.block, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
           ctx.restore();
         }
-        if (gamestate.levels[gamestate.currLevel][row][col] == "q") {
+        if (gamestate.levels[gamestate.currLevel][row][col].dir == "q") {
           ctx.save();
           ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
           ctx.rotate(0);
           ctx.drawImage(gamestate.images.button, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
           ctx.restore();
         }
-        if (gamestate.levels[gamestate.currLevel][row][col] == "w") {
+        if (gamestate.levels[gamestate.currLevel][row][col].dir == "w") {
           ctx.save();
           ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
           ctx.rotate(Math.PI);
           ctx.drawImage(gamestate.images.button, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
           ctx.restore();
         }
-        if (gamestate.levels[gamestate.currLevel][row][col] == "e") {
+        if (gamestate.levels[gamestate.currLevel][row][col].dir == "e") {
           ctx.save();
           ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
           ctx.rotate(Math.PI/2);
           ctx.drawImage(gamestate.images.button, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
           ctx.restore();
         }
-        if (gamestate.levels[gamestate.currLevel][row][col] == "t") {
+        if (gamestate.levels[gamestate.currLevel][row][col].dir == "t") {
           ctx.save();
           ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
           ctx.rotate(3*Math.PI/2);
@@ -299,14 +338,14 @@ function draw(gamestate, ctx) {
         if (gamestate.levels[gamestate.currLevel][row][col] == "l") {
           ctx.save();
           ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
-          ctx.rotate(Math.PI/2);
+          ctx.rotate(3*Math.PI/2);
           ctx.drawImage(gamestate.images.winbutton, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
           ctx.restore();
         }
         if (gamestate.levels[gamestate.currLevel][row][col] == "r") {
           ctx.save();
           ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
-          ctx.rotate(3*Math.PI/2);
+          ctx.rotate(Math.PI/2);
           ctx.drawImage(gamestate.images.winbutton, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
           ctx.restore();
         }
@@ -402,9 +441,9 @@ async function fetchLevel(url) {
     const currRow = rows[i].trim().split(" ");
     const effect = [];
     for (let j = 0; j < (currRow.length - 2) / 2; ++j) {
-      effect.push([currRow[2 * j + 3], currRow[2 * j + 2]])
+      effect.push([parseInt(currRow[2 * j + 2]), parseInt(currRow[2 * j + 3])])
     }
-    map[parseInt(currRow[1])][parseInt(currRow[0])] = { id: "button", effect, active: false }
+    map[parseInt(currRow[1])][parseInt(currRow[0])] = { id: "button", effect, active: false, dir:map[parseInt(currRow[1])][parseInt(currRow[0])] }
   }
   return [map, clones];
 
