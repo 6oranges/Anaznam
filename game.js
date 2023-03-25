@@ -51,8 +51,10 @@ function Character() {
     return [tl, tr, bl, br];
   }
   const collides = (x, y, gamestate) => {
-    const [tl, tr, bl, br] = touching(x, y, gamestate);
-    return ("b".includes(tl) || "b".includes(tr) || "b".includes(bl) || "b".includes(br));
+    return touching(x, y, gamestate).includes("b") || touching(x, y, gamestate).includes("o");
+  }
+  char.collidingButton = (x,y, gamestate) =>{
+    return touching(char.x,char.y,gamestate).includes(gamestate.levels[gamestate.currLevel][y][x]);
   }
   char.update = (gamestate, input) => {
     if (char.fizzle) {
@@ -170,6 +172,9 @@ function Character() {
         char.dx = -JUMPPOWER;
       }
     }
+    if (input.restart || touching(char.x, char.y, gamestate).includes("k")) {
+      gamestate.restart=true;
+    }
     if (input.beem) {
       if (char.current) {
         if (gamestate.clones[gamestate.currLevel] > gamestate.histories.length){
@@ -194,11 +199,23 @@ function logic(gamestate) {
   gamestate.tick += 1;
   gamestate.input.update();
 
+  for (let row = 0; row < gamestate.levels[gamestate.currLevel].length; ++row) {
+    for (let col = 0; col < gamestate.levels[gamestate.currLevel][0].length; ++col) {
+      if (gamestate.levels[gamestate.currLevel][row][col].id === "button"){
+
+      }
+    }
+  }
+
   for (let i = 0; i < gamestate.histories.length; ++i) {
     gamestate.histories[i].update(gamestate);
   }
   gamestate.char.update(gamestate, gamestate.input);
-
+  if (gamestate.restart){
+    gamestate.restart = false;
+    gamestate.histories=[];
+    placeCharacters(gamestate);
+  }
 }
 function draw(gamestate, ctx) {
   ctx.clearRect(0, 0, gamestate.width, gamestate.height);
@@ -351,6 +368,7 @@ function Input(element) {
   element.addEventListener("keydown", (e) => {
     keys.add(e.code);
     newkeys.add(e.code);
+    e.preventDefault();
   })
   element.addEventListener("keyup", (e) => {
     keys.delete(e.code);
@@ -366,6 +384,7 @@ function Input(element) {
     input.gravityDown = keys.has("ArrowDown");
     input.jump = keys.has("Space");
     input.beem = newkeys.has("KeyQ");
+    input.restart = newkeys.has("KeyR");
     newkeys.clear();
   }
   return input;
@@ -385,7 +404,7 @@ async function fetchLevel(url) {
     for (let j = 0; j < (currRow.length - 2) / 2; ++j) {
       effect.push([currRow[2 * j + 3], currRow[2 * j + 2]])
     }
-    map[parseInt(currRow[1])][parseInt(currRow[0])] = { id: "button", effect }
+    map[parseInt(currRow[1])][parseInt(currRow[0])] = { id: "button", effect, active: false }
   }
   return [map, clones];
 
@@ -490,16 +509,17 @@ async function main() {
   gamestate.levels = {};
   gamestate.clones = {};
   gamestate.images = {};
-  const player = loadImage("cheese.svg");
-  const gplayer = loadImage("orangeCheese.svg");
-  const gravityOn = loadImage("tiles_GravityOn.svg");
-  const gravityOff = loadImage("tiles_GravityOff.svg");
-  const winButton = loadImage("tiles_WinButton.svg");
-  const block = loadImage("tiles_Block.svg");
-  const door = loadImage("tiles_Door.svg");
-  const death = loadImage("tiles_Death.svg");
-  const button = loadImage("tiles_Button.svg");
-  const lvl1 = fetchLevel("level1.txt");
+  gamestate.restart=false;
+  const player = loadImage("images/cheese.svg");
+  const gplayer = loadImage("images/orangeCheese.svg");
+  const gravityOn = loadImage("images/tiles_GravityOn.svg");
+  const gravityOff = loadImage("images/tiles_GravityOff.svg");
+  const winButton = loadImage("images/tiles_WinButton.svg");
+  const block = loadImage("images/tiles_Block.svg");
+  const door = loadImage("images/tiles_Door.svg");
+  const death = loadImage("images/tiles_Death.svg");
+  const button = loadImage("images/tiles_Button.svg");
+  const lvl1 = fetchLevel("levels/level1.txt");
   await Promise.all([player, gplayer, gravityOn, gravityOff, winButton, block, door, death, button, lvl1]);
   const [map, clones] = await lvl1
   gamestate.levels["level1"] = map;
