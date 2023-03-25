@@ -138,7 +138,7 @@ function Character() {
     if (input.down && ["left", "right"].includes(char.gravity)) {
       char.dy += accel;
     }
-    if (touching(char.x, char.y, gamestate)) {
+    if (touching(char.x, char.y, gamestate).includes("g")) {
       if (input.gravityLeft) {
         char.gravity = "left";
         char.desiredrotation = 90 * Math.PI / 180
@@ -172,11 +172,13 @@ function Character() {
     }
     if (input.beem) {
       if (char.current) {
-        const hist = Character();
-        hist.history = char.history;
-        hist.current = false;
-        gamestate.histories.push(hist);
-        placeCharacters(gamestate)
+        if (gamestate.clones[gamestate.currLevel] > gamestate.histories.length){
+          const hist = Character();
+          hist.history = char.history;
+          hist.current = false;
+          gamestate.histories.push(hist);
+          placeCharacters(gamestate)
+        }
       } else {
         char.fizzle = true;
       }
@@ -200,6 +202,7 @@ function logic(gamestate) {
 }
 function draw(gamestate, ctx) {
   ctx.clearRect(0, 0, gamestate.width, gamestate.height);
+  ctx.fillRect(0, 0, gamestate.width, gamestate.height)
   if (gamestate.levels[gamestate.currLevel]) {
     ctx.save();
     gamestate.cameraX = gamestate.char.x;
@@ -210,7 +213,7 @@ function draw(gamestate, ctx) {
     if (gamestate.cameraY - gamestate.height / 2 < 0) {
       gamestate.cameraY = gamestate.height / 2;
     }
-    const ww = TILEWIDTH * (gamestate.levels[gamestate.currLevel][0].length - 1);
+    const ww = TILEWIDTH * (gamestate.levels[gamestate.currLevel][0].length);
     if (gamestate.cameraX + gamestate.width / 2 > ww) {
       gamestate.cameraX = ww - gamestate.width / 2;
     }
@@ -229,16 +232,94 @@ function draw(gamestate, ctx) {
     for (let row = 0; row < gamestate.levels[gamestate.currLevel].length; ++row) {
       for (let col = 0; col < gamestate.levels[gamestate.currLevel][0].length; ++col) {
         if (gamestate.levels[gamestate.currLevel][row][col] == "b") {
-          ctx.fillStyle = "#888"
-          ctx.fillRect(col * TILEWIDTH, row * TILEWIDTH, TILEWIDTH, TILEWIDTH);
+          ctx.save();
+          ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
+          ctx.drawImage(gamestate.images.block, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
+          ctx.restore();
         }
-        if ("udlr".includes(gamestate.levels[gamestate.currLevel][row][col])) {
-          ctx.fillStyle = "#00F"
-          ctx.fillRect(col * TILEWIDTH, row * TILEWIDTH, TILEWIDTH, TILEWIDTH);
+        if (gamestate.levels[gamestate.currLevel][row][col] == "q") {
+          ctx.save();
+          ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
+          ctx.rotate(0);
+          ctx.drawImage(gamestate.images.button, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
+          ctx.restore();
+        }
+        if (gamestate.levels[gamestate.currLevel][row][col] == "w") {
+          ctx.save();
+          ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
+          ctx.rotate(Math.PI);
+          ctx.drawImage(gamestate.images.button, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
+          ctx.restore();
+        }
+        if (gamestate.levels[gamestate.currLevel][row][col] == "e") {
+          ctx.save();
+          ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
+          ctx.rotate(Math.PI/2);
+          ctx.drawImage(gamestate.images.button, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
+          ctx.restore();
+        }
+        if (gamestate.levels[gamestate.currLevel][row][col] == "t") {
+          ctx.save();
+          ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
+          ctx.rotate(3*Math.PI/2);
+          ctx.drawImage(gamestate.images.button, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
+          ctx.restore();
+        }
+        if (gamestate.levels[gamestate.currLevel][row][col] == "u") {
+          ctx.save();
+          ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
+          ctx.rotate(0);
+          ctx.drawImage(gamestate.images.winbutton, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
+          ctx.restore();
+        }
+        if (gamestate.levels[gamestate.currLevel][row][col] == "d") {
+          ctx.save();
+          ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
+          ctx.rotate(Math.PI);
+          ctx.drawImage(gamestate.images.winbutton, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
+          ctx.restore();
+        }
+        if (gamestate.levels[gamestate.currLevel][row][col] == "l") {
+          ctx.save();
+          ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
+          ctx.rotate(Math.PI/2);
+          ctx.drawImage(gamestate.images.winbutton, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
+          ctx.restore();
+        }
+        if (gamestate.levels[gamestate.currLevel][row][col] == "r") {
+          ctx.save();
+          ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
+          ctx.rotate(3*Math.PI/2);
+          ctx.drawImage(gamestate.images.winbutton, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
+          ctx.restore();
         }
         if (gamestate.levels[gamestate.currLevel][row][col] == "g") {
-          ctx.fillStyle = "#FD0"
-          ctx.fillRect(col * TILEWIDTH, row * TILEWIDTH, TILEWIDTH, TILEWIDTH);
+          ctx.save();
+          ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
+          ctx.translate(0, Math.sin((gamestate.tick / 100) * 8));
+          ctx.rotate(gamestate.tick / 50);
+          ctx.drawImage(gamestate.images.gravityon, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
+          ctx.restore();
+        }
+        if (gamestate.levels[gamestate.currLevel][row][col] == "f") {
+          ctx.save();
+          ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
+          ctx.translate(0, Math.sin((gamestate.tick / 200) * 8));
+          ctx.rotate(gamestate.tick / 100);
+          ctx.drawImage(gamestate.images.gravityoff, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
+          ctx.restore();
+        }
+        if (gamestate.levels[gamestate.currLevel][row][col] == "k") {
+          ctx.save();
+          ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
+          ctx.drawImage(gamestate.images.death, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
+          ctx.restore();
+        }
+        if (gamestate.levels[gamestate.currLevel][row][col] == "o") {
+          ctx.save();
+          ctx.translate(col * TILEWIDTH + TILEWIDTH / 2, row * TILEWIDTH + TILEWIDTH / 2)
+          ctx.drawImage(gamestate.images.door, -TILEWIDTH / 2, -TILEWIDTH / 2, TILEWIDTH, TILEWIDTH);
+          ctx.restore();
         }
       }
     }
@@ -293,7 +374,7 @@ async function fetchLevel(url) {
   const response = await fetch(url);
   const text = await response.text();
   const rows = text.split("\n");
-  const [width, height] = rows[0].trim().split(" ");
+  const [clones, height] = rows[0].trim().split(" ");
   const map = []
   for (let i = 1; i < parseInt(height) + 1; ++i) {
     map.push(rows[i].trim().split(""));
@@ -306,7 +387,7 @@ async function fetchLevel(url) {
     }
     map[parseInt(currRow[1])][parseInt(currRow[0])] = { id: "button", effect }
   }
-  return map;
+  return [map, clones];
 
 }
 function loadImage(url) {
@@ -407,6 +488,7 @@ async function main() {
   new ResizeObserver(resize).observe(canvas)
   gamestate.input = Input(canvas);
   gamestate.levels = {};
+  gamestate.clones = {};
   gamestate.images = {};
   const player = loadImage("cheese.svg");
   const gplayer = loadImage("orangeCheese.svg");
@@ -418,8 +500,10 @@ async function main() {
   const death = loadImage("tiles_Death.svg");
   const button = loadImage("tiles_Button.svg");
   const lvl1 = fetchLevel("level1.txt");
-  await Promise.all([player, lvl1]);
-  gamestate.levels["level1"] = await lvl1;
+  await Promise.all([player, gplayer, gravityOn, gravityOff, winButton, block, door, death, button, lvl1]);
+  const [map, clones] = await lvl1
+  gamestate.levels["level1"] = map;
+  gamestate.clones["level1"] = clones;
   gamestate.images["player"] = await player;
   gamestate.images["ghostplayer"] = await gplayer;
   gamestate.images["gravityon"] = await gravityOn;
