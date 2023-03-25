@@ -1,10 +1,12 @@
+31 10
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-b                             b
+b                            ab
 b         b                   b
 b          b                  b
 b          b                  b
 b          b   b              b
 b          b                  b
 b              b              b
-bs                            b
+bs                 t          b
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+19 8 29 2
